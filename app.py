@@ -53,7 +53,7 @@ def clean_string(s):
     # Remove extra spaces
     s = ' '.join(s.split())
 
-    s=s.replace("and","&")
+    s=s.replace("and ","&")
 
     for country in pycountry.countries:
         # Check if the country's name is in the sentence
