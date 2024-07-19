@@ -4,7 +4,7 @@ import io
 import nltk
 import csv
 import re,syllapy
-
+import pycountry
 
 
 st.set_page_config(page_title="AIO Truncation App")
@@ -52,8 +52,16 @@ def clean_string(s):
     
     # Remove extra spaces
     s = ' '.join(s.split())
+
+    s=s.replace("and","&")
+
+    for country in pycountry.countries:
+        # Check if the country's name is in the sentence
+        if country.name.lower() in s:
+            s=s.replace(country.name.lower(),'')
     
     return s
+
 
 
 def remove_descriptions(sentence):
