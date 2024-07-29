@@ -25,7 +25,8 @@ lemmatizer = WordNetLemmatizer()
 
 
 def remove_special_chars(s):
-    return re.sub('[^a-zA-Z0-9/$]', ' ', s)
+    s=s.replace("'s","")
+    return re.sub('[^a-zA-Z0-9/$]', '', s)
 
 
 def check_multi_syllable(word):
@@ -33,9 +34,24 @@ def check_multi_syllable(word):
     return num_syllables
 
 
+def remove_double_consonants(word):
+    new_word = []
+    i = 0
+    while i < len(word):
+        if i < len(word) - 1 and word[i] == word[i + 1] and word[i] not in "aeiou":
+            new_word.append(word[i])
+            i += 2  # skip the next consonant
+        else:
+            new_word.append(word[i])
+            i += 1
+    return ''.join(new_word)
+
+
 def remove_inner_vowels(s):
     if len(s) <= 2:  # If the string is two characters or less, return it as is
         return s
+    
+    s=remove_double_consonants(s)
     vowels = "aeiouAEIOU"
     # Keep the first and last character as is, and remove vowels from the rest
     return s[0] + ''.join([char for char in s[1:-1] if char not in vowels]) + s[-1]
@@ -62,6 +78,18 @@ def clean_string(s):
     
     return s
 
+
+def remove_repeated_occurrences(input_string):
+    words = input_string.split()
+    seen_words = set()
+    result = []
+
+    for word in words:
+        if word not in seen_words:
+            result.append(word)
+            seen_words.add(word)
+
+    return ' '.join(result)
 
 
 def remove_descriptions(sentence):
@@ -142,7 +170,7 @@ def start_truncation(file_name):
                         new_word+=splitted+" "
                 else:
                     new_word+=splitted+" "
-            value[1]=new_word
+            value[1]=remove_repeated_occurrences(new_word)
 
     actual=[]
     for key,value in items_dict.items():
